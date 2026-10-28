@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "firefox-devtools": {
+      "command": "npx",
+      "args": [
+        "-y", "@mozilla/firefox-devtools-mcp@0.10.7",
+        "--firefox-path", "/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox",
+        "--headless",
+        "--tool-preset", "developer",
+        "--output-file", "firefox-output.log",
+        "--pref", "devtools.console.stdout.content=true",
+        "--pref", "extensions.webextensions.uuids={\"inspector-ext@clintparker.com\":\"11111111-2222-3333-4444-555555555555\"}"
+      ],
+      "env": { "MOZ_REMOTE_ALLOW_SYSTEM_ACCESS": "1" }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+#ie-panel { margin: 0 0 1em; }
+#ie-panel .ie-head { display: flex; flex-wrap: wrap; gap: 0.5em; align-items: center; }
+#ie-panel .ie-head h5 { margin: 0; }
+#ie-panel .ie-lodge h6 { margin: 0.75em 0 0.25em; }
+#ie-panel .ie-current { margin: 0 0 0.25em; font-size: 0.9em; }
+#ie-panel .ie-met { color: #1a7f37; }
+#ie-panel .ie-expiring { color: #9a6700; font-weight: bold; }
+#ie-panel .ie-missing, #ie-panel .ie-expired, #ie-panel .ie-error { color: #cf222e; }
+#ie-panel .ie-loading, #ie-panel .ie-na, #ie-panel .ie-info, #ie-panel .ie-empty td { color: #6e7781; }
+#ie-panel .ie-banner { background: #fff8c5; padding: 0.5em; }
+#ie-panel button { cursor: pointer; }
+.ie-add { display: inline-flex; flex-wrap: wrap; gap: 0.25em; align-items: center; }
+.ie-already { font-size: 0.85em; color: #1a7f37; }
+.ie-add-member { margin: 0 0 0.75em; }

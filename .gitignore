@@ -1,0 +1,10 @@
+node_modules/
+web-ext-artifacts/
+.amo-credentials
+*.log
+research/site-capture/
+*.har
+firefox-output.log
+spike/
+.superpowers/
+.DS_Store
