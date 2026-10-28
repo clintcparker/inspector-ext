@@ -8,3 +8,5 @@ firefox-output.log
 spike/
 .superpowers/
 .DS_Store
+.env
+.amo-upload-uuid

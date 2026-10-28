@@ -10,7 +10,7 @@ These are working notes for the design: status, decisions, site structure and th
    - The pieces are web-ext lint, Vitest unit tests, a Puppeteer-over-BiDi e2e test, and the `firefox-devtools` MCP.
    - Details and gotchas are in `CLAUDE.md`. The background research with sources is in `research/firefox-extension-dev-with-claude.md`. The Brain vault page is `skills/firefox-extension-agent-workflow`.
 2. **v0.1.0 is implemented** in `extension/` (dashboard panel plus "Add as presumptive…" controls), replacing the `hello-ff` proof-of-concept. It was checked on the live site on 2026-10-28.
-3. **Signing / AMO submission: deferred by the user.** Don't start it.
+3. **Signed on AMO, unlisted channel (2026-10-28):** v0.1.0. Run `npm run sign` (reads `WEB_EXT_API_KEY`/`WEB_EXT_API_SECRET` from the gitignored `.env`) after bumping `version` in the manifest; the signed `.xpi` lands in `web-ext-artifacts/`.
 4. **Committed on `main`**, one commit per plan task plus review fixes.
 
 ## The extension to build

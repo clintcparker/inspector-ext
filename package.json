@@ -9,7 +9,8 @@
     "test": "npm run lint && npm run test:unit && npm run test:e2e",
     "build": "web-ext build --source-dir extension --overwrite-dest",
     "dev": "web-ext run --source-dir extension --firefox=deved --verbose --no-input --pref devtools.console.stdout.content=true",
-    "screenshot": "node scripts/screenshot.mjs"
+    "screenshot": "node scripts/screenshot.mjs",
+    "sign": "set -a && . ./.env && set +a && web-ext sign --source-dir extension --channel=unlisted"
   },
   "keywords": [],
   "author": "",
