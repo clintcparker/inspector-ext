@@ -1,13 +1,13 @@
-// Renders the panel against the synthetic site and saves docs/screenshot.png.
-// Every name, lodge and date comes from test/fixtures/site.mjs, so the image
-// holds no member data. The fixture page has none of the site's own CSS; a
-// small stand-in stylesheet approximates it so the panel reads as it does live.
+// Renders the extension against the synthetic site and saves the README
+// images in docs/: the district panel and the committee email controls. Every name, lodge and date comes from
+// test/fixtures/site.mjs, so the images hold no member data. The fixture pages
+// have none of the site's own CSS; small stand-in stylesheets approximate it.
 import { rm } from "node:fs/promises";
 import path from "node:path";
 import { makeSite } from "../test/fixtures/site.mjs";
 import { launchFirefox, prepareExtension, serveSite } from "../test/helpers/harness.mjs";
 
-const OUT = path.resolve(import.meta.dirname, "../docs/screenshot.png");
+const DOCS = path.resolve(import.meta.dirname, "../docs");
 const SITE_CSS = `
   body { margin: 0; padding: 16px; font: 15px/1.4 "Helvetica Neue", Arial, sans-serif; color: #222; }
   nav { display: none; }
@@ -24,6 +24,32 @@ const SITE_CSS = `
   #ie-panel button { background: #7a1f24; color: #fff; border: 0; border-radius: 3px; padding: 3px 8px; margin-left: 6px; }
   #ie-panel select { padding: 2px 6px; }
 `;
+const PUBLIC_CSS = `
+  body { margin: 0; padding: 16px; font: 15px/1.4 "Helvetica Neue", Arial, sans-serif; color: #222; background: #f4f4f4; }
+  nav { display: none; }
+  .cont-card-section { max-width: 900px; border: 1px solid #ddd; margin-bottom: 10px; background: #fff; }
+  .cont-card-section:first-child { display: none; }
+  .async-accordian-title { margin: 0; padding: 10px 12px; background: #e3e3e3; font-size: 1.1em; }
+  .async-accordian-content { padding: 8px 12px; }
+  .async-accordian-content > table { width: 100%; margin-bottom: 12px; }
+  table { border-collapse: collapse; }
+  h4 { margin: 4px 0; }
+  table table { width: 100%; font-size: 0.9em; }
+  table table th { text-align: left; background: #ececec; padding: 4px 8px; }
+  table table td { padding: 4px 8px; border-top: 1px solid #e3e3e3; }
+  a { color: #7a1f24; text-decoration: none; }
+  .ie-mail-bar button { background: #7a1f24; color: #fff; border: 0; border-radius: 3px; padding: 4px 10px; }
+`;
+
+const shot = async (page, selector, file) => {
+  const box = await page.$eval(selector, (e) => {
+    const r = e.getBoundingClientRect();
+    return { x: r.x, y: r.y, width: r.width, height: r.height };
+  });
+  const out = path.join(DOCS, file);
+  await page.screenshot({ path: out, clip: box });
+  console.log(`wrote ${path.relative(process.cwd(), out)}`);
+};
 
 const { dir, id } = await prepareExtension();
 const site = makeSite();
@@ -47,12 +73,12 @@ try {
     { timeout: 30000 }, roster.length);
   await page.addStyleTag({ content: SITE_CSS });
 
-  const box = await page.$eval("#ie-panel", (e) => {
-    const r = e.getBoundingClientRect();
-    return { x: r.x, y: r.y, width: r.width, height: r.height };
-  });
-  await page.screenshot({ path: OUT, clip: box });
-  console.log(`wrote ${path.relative(process.cwd(), OUT)}`);
+  await shot(page, "#ie-panel", "screenshot.png");
+
+  await page.goto(`${server.base}/public_members/memberships/${site.lodges[0].id}`);
+  await page.waitForSelector(".ie-mail-bar", { timeout: 15000 });
+  await page.addStyleTag({ content: PUBLIC_CSS });
+  await shot(page, ".cont-card-section:has(.ie-mail-bar)", "screenshot-committees.png");
 } finally {
   await browser.close();
   server.close();

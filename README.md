@@ -1,6 +1,10 @@
 # Inspector Dashboard Helper
 
-A Firefox extension for Masonic Inspectors in the Grand Lodge of California. It adds a panel to the district dashboard on [member.freemason.org](https://member.freemason.org) that shows, on one screen, each lodge's current officers and whether next year's presumptive WM, SW, JW and SD meet their qualification requirements:
+A Firefox extension for Masonic Inspectors in the Grand Lodge of California. It adds shortcuts to [member.freemason.org](https://member.freemason.org) that save you from clicking around: a qualification panel on the district dashboard, a link from each lodge to its public page, and one-click email to lodge committees.
+
+## Presumptive officers panel
+
+On the district dashboard, a panel shows on one screen each lodge's current officers and whether next year's presumptive WM, SW, JW and SD meet their qualification requirements:
 
 - Master Mason proficiency;
 - ritual Officer Qualification (within the last 24 months);
@@ -11,6 +15,24 @@ You build the roster yourself with an "Add as presumptive…" control on member 
 ![The panel on a district dashboard, showing two lodges with candidates' qualification status](docs/screenshot.png)
 
 *Screenshot from a synthetic copy of the site; all names and dates are made up.*
+
+## Lodge public page link
+
+A lodge's dashboard (the page you reach from the district's lodge list) gets a **Public page** link in its heading. It opens the lodge's public page, which lists the lodge's officers and committees.
+
+## Email a committee
+
+On a lodge's public page, the **Lodge Committees** section gets email controls:
+
+- **Email committee**, under each committee's name, opens a new message in your mail app addressed to that committee's members.
+- **Email all committees**, at the top of the section, does the same for every committee member, with each person listed once.
+- **Copy emails** next to either one copies the addresses, comma-separated, so you can paste them into webmail or a BCC field.
+
+Members with no email on file are skipped, and a note says how many.
+
+![The Lodge Committees section with Email committee and Copy emails controls above each committee's member table](docs/screenshot-committees.png)
+
+*Synthetic data, as above.*
 
 ## Install
 
@@ -32,7 +54,7 @@ The extension only talks to member.freemason.org, using the session you are alre
 npm install
 npm test            # lint, unit tests, end-to-end test in a throwaway headless Firefox
 npm run build       # zip into web-ext-artifacts/
-npm run screenshot  # regenerate docs/screenshot.png from the synthetic site
+npm run screenshot  # regenerate the docs/ screenshots from the synthetic site
 npm run sign        # sign on AMO (unlisted); needs WEB_EXT_API_KEY/SECRET in .env
 ```
 

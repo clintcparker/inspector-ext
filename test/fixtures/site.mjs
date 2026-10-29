@@ -61,6 +61,33 @@ export function sidebarMemberships(lodges) {
   return lodges.map((l) => `<div class="cont-card-section"><h4><a href="/lodges/${l.id}">${esc(l.name)} No.${l.number}</a></h4><p>Master Mason</p></div>`).join("");
 }
 
+// Lodge dashboard (/ous/{id}): the heading row of icon links the extension adds to.
+export function lodgePage({ name, number }) {
+  return shell(`${name} No. ${number}`,
+    `<div id="ou-tab-cont-group"><div id="dashboard" class="ou-tab-content full-tab-content first-tab">` +
+    `<div class="ou-heading">Dashboard <span class="ou-heading-icon"><a href="#members_list" title="Member Search">Search</a></span></div>` +
+    `</div></div>`);
+}
+
+// Public lodge page (/public_members/memberships/{id}), copied from the
+// 2026-10-29 capture: one table per committee, members in an inner table.
+// The committee-level "Email:" line has an empty mailto, as on the site.
+export function publicLodgePage({ name, number, committees }) {
+  const committee = (c) =>
+    `<table class="info-table no-row-links"><tr><td><h4>${esc(c.name)}</h4>` +
+    `<strong>Charge:</strong> Example charge.<br /><strong>Email:</strong> &nbsp;&nbsp;<a href='mailto:'></a><br /></td></tr>` +
+    `<tr><td><table class="info-table no-row-links no-responsive-col-title"><thead><tr><th>Role</th><th>Name</th><th>Phone</th><th>Email</th></tr></thead><tbody>` +
+    c.members.map((m) =>
+      `<tr><td data-title="Office"><strong>${esc(m.role)}</strong></td><td data-title="Officer">${esc(m.name)}</td><td data-title="Phone"></td>` +
+      `<td data-title="Email">${m.email ? `<a href="mailto:${esc(m.email)}">${esc(m.email)}</a>` : ""}</td></tr>`).join("") +
+    `</tbody></table></td></tr></table>`;
+  return shell(`${name} No. ${number}`,
+    `<div class="cont-card-section default-accordian"><h4 class="heading async-accordian-title">Lodge Officers</h4>` +
+    `<div class="cont-child async-accordian-content"><table class="info-table"><tr><td data-title="Email"><a href="mailto:officer@example.test">officer@example.test</a></td></tr></table></div></div>` +
+    `<div class="cont-card-section default-accordian"><h4 class="heading async-accordian-title">Lodge Committees</h4>` +
+    `<div class="cont-child async-accordian-content">${committees.map(committee).join("")}</div></div>`);
+}
+
 export const signInPage = () =>
   `<!DOCTYPE html><html><body><form action="/users/sign_in" method="post"><input name="user[email]"><input type="password" name="user[password]"></form></body></html>`;
 
@@ -109,7 +136,20 @@ export function makeSite(today = todayIso()) {
     ],
     22: [{ office: "Worshipful Master", memberId: 2002, name: name(2002) }],
   };
-  return { district: 123, lodges, members, officers };
+  const committees = {
+    11: [
+      { name: "Audit Committee", members: [
+        { role: "Chairman", name: "Alan Able", email: "alan@example.test" },
+        { role: "Member", name: "Ben Baker", email: "ben@example.test" },
+        { role: "Member", name: "Carl Cole", email: "" },
+      ] },
+      { name: "Charity Committee", members: [
+        { role: "Chairman", name: "Ben Baker", email: "BEN@example.test" },
+        { role: "Member", name: "Zed Zero", email: "zed@example.test" },
+      ] },
+    ],
+  };
+  return { district: 123, lodges, members, officers, committees };
 }
 
 export function route(site, path, state = {}) {
@@ -124,6 +164,10 @@ export function route(site, path, state = {}) {
       const l = lodge(x.lodgeId);
       return { memberId: Number(id), name: `${x.last}, ${x.first}`, memberNumber: 900000 + Number(id), status: "Master Mason", lodge: `${l.name} No.${l.number}` };
     })) };
+  }
+  if ((m = /^\/ous\/(\d+)$/.exec(path)) && lodge(Number(m[1]))) return { status: 200, body: lodgePage(lodge(Number(m[1]))) };
+  if ((m = /^\/public_members\/memberships\/(\d+)$/.exec(path)) && lodge(Number(m[1]))) {
+    return { status: 200, body: publicLodgePage({ ...lodge(Number(m[1])), committees: site.committees?.[m[1]] ?? [] }) };
   }
   if ((m = /^\/ous\/(\d+)\/ou_officers$/.exec(path)) && site.officers[m[1]]) return { status: 200, body: officersFragment(site.officers[m[1]]) };
   if ((m = /^\/mems\/(\d+)$/.exec(path)) && site.members[m[1]]) return { status: 200, body: memberPage(site.members[m[1]]) };

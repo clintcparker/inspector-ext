@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Inspector Dashboard Helper",
-  "version": "0.1.0",
-  "description": "Adds a presumptive-officer qualification panel to the Inspector's district dashboard on member.freemason.org.",
+  "version": "0.2.0",
+  "description": "Inspector shortcuts on member.freemason.org: a presumptive-officer qualification panel, lodge public-page links and committee email.",
   "browser_specific_settings": {
     "gecko": {
       "id": "inspector-ext@clintparker.com",
@@ -23,6 +23,16 @@
     {
       "matches": ["https://member.freemason.org/mems/*"],
       "js": ["content/common.js", "content/add-member.js"],
+      "css": ["content/panel.css"]
+    },
+    {
+      "matches": ["https://member.freemason.org/ous/*"],
+      "js": ["content/common.js", "content/lodge-link.js"],
+      "css": ["content/panel.css"]
+    },
+    {
+      "matches": ["https://member.freemason.org/public_members/memberships/*"],
+      "js": ["content/common.js", "content/committee-mail.js"],
       "css": ["content/panel.css"]
     }
   ]

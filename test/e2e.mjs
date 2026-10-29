@@ -158,6 +158,32 @@ try {
     await page.waitForFunction(() => document.querySelector(".ie-add-member .ie-already")?.textContent.includes("JW"), { timeout: 5000 });
   });
 
+  await page.goto(`${BASE}/ous/11`);
+  await check("lodge dashboard links to the lodge's public page", async () => {
+    await page.waitForSelector("#dashboard .ou-heading a.ie-public-page", { timeout: 10000 });
+    assert.equal(await page.$eval("a.ie-public-page", (a) => new URL(a.href).pathname), "/public_members/memberships/11");
+  });
+
+  await page.goto(`${BASE}/public_members/memberships/11`);
+  await check("each committee gets a mailto with its members' emails", async () => {
+    await page.waitForSelector(".ie-mail-bar", { timeout: 10000 });
+    const bars = await page.$$eval("td > .ie-mail-bar a.ie-mail-link", (as) => as.map((a) => a.getAttribute("href")));
+    assert.deepEqual(bars, ["mailto:alan@example.test,ben@example.test", "mailto:BEN@example.test,zed@example.test"]);
+    assert.match(await page.$eval("td > .ie-mail-bar", (e) => e.textContent), /1 without email/);
+  });
+  await check("committees heading gets a deduplicated mailto for all committees", async () => {
+    // The site's accordion toggles the title's next sibling; it must stay the content.
+    assert.equal(await page.$eval(".async-accordian-content > .ie-mail-bar", (b) => b.closest(".cont-card-section").querySelector(".async-accordian-title").nextElementSibling.classList.contains("async-accordian-content")), true);
+    assert.equal(await page.$eval(".async-accordian-content > .ie-mail-bar a.ie-mail-link", (a) => a.getAttribute("href")),
+      "mailto:alan@example.test,ben@example.test,zed@example.test");
+    assert.equal(await page.$$eval(".ie-mail-bar", (els) => els.length), 3, "officers section must not get a bar");
+  });
+  await check("copy button copies the addresses", async () => {
+    await page.click(".async-accordian-content > .ie-mail-bar button.ie-mail-copy");
+    await page.waitForFunction(() => document.querySelector(".async-accordian-content > .ie-mail-bar button.ie-mail-copy").textContent !== "Copy emails", { timeout: 5000 });
+    assert.equal(await page.$eval(".async-accordian-content > .ie-mail-bar button.ie-mail-copy", (b) => b.textContent), "Copied 3");
+  });
+
   await page.goto(`${BASE}/districts/123`);
   await check("candidates render with requirement statuses", async () => {
     await page.waitForFunction(() => document.querySelectorAll("#ie-panel tr.ie-candidate").length === 4 && !document.querySelector("#ie-panel .ie-loading"), { timeout: 30000 });

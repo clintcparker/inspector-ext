@@ -1,6 +1,6 @@
 # inspector-ext design notes
 
-**Status (2026-10-28):** v0.1.0 built and checked on the live site. The spec and plan are the source of truth; this file is history.
+**Status (2026-10-29):** v0.2.0 adds a "Public page" link on lodge dashboards (`/ous/{n}` → `/public_members/memberships/{n}`, same ID) and committee email controls on that public page. v0.1.0 was built and checked on the live site on 2026-10-28. The spec and plan are the source of truth; this file is history.
 
 These are working notes for the design: status, decisions, site structure and the HAR rules. Once the spec is written in `docs/superpowers/specs/`, the spec supersedes the decisions recorded here.
 

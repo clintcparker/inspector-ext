@@ -13,7 +13,7 @@ A Firefox extension (target: addons.mozilla.org) that improves the Inspector's d
 | `npm run test:e2e` | Puppeteer over WebDriver BiDi: installs the extension into a throwaway headless profile and drives a synthetic copy of the site through the panel and add controls, and checks background logs. `FIREFOX_BIN=...` to switch Firefox, `HEADED=1` to watch |
 | `npm test` | All three |
 | `npm run build` | Zip into `web-ext-artifacts/` |
-| `npm run screenshot` | Regenerate `docs/screenshot.png` (README / AMO image) from the synthetic site, so it holds no member data. Shares setup with the e2e test via `test/helpers/harness.mjs` |
+| `npm run screenshot` | Regenerate the `docs/screenshot*.png` README / AMO images from the synthetic site, so they hold no member data. Shares setup with the e2e test via `test/helpers/harness.mjs` |
 | `npm run dev` | Live-reload loop. Run in background with `> web-ext.log 2>&1`, add `MOZ_HEADLESS=1` for headless; grep the log for `[inspector-ext]` |
 
 `.mcp.json` registers Mozilla's `firefox-devtools` MCP (headless Dev Edition, Firefox stdout in `firefox-output.log`) for interactive poking: `install_extension`, `navigate_page`, `take_snapshot`, `evaluate_script`, `get_firefox_output`.
